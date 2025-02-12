@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class MovieService {
   final String _apiKey = 'dde1b0947878977ea278cf2b05a7368b';
-  final String _baseUrl = 'https://api.themoviedb.org/3';
+  final String _baseUrl = 'https://api.themoviedb.org/3' ;
 
   // Helper method to build API URL
   Uri _buildUrl(String endpoint) {

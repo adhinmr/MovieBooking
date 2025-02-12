@@ -6,7 +6,7 @@ class SingUpScreen extends StatefulWidget {
   const SingUpScreen({super.key});
 
   @override
-  State<SingUpScreen> createState() => _SingUpScreenState();
+  State<SingUpScreen> createState() => _SingUpScreenState ();
 }
 
 class _SingUpScreenState extends State<SingUpScreen> {

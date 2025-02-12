@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movie_booking_app/API/apicall.dart';
 import 'package:movie_booking_app/services/movie_service.dart';
-import 'package:movie_booking_app/services/moviebookingpage.dart';
+import 'package:movie_booking_app/services/movie_bookingpage.dart';
 
-class MovieDetailsPage extends StatefulWidget {
+class MovieDetailsPage extends StatefulWidget  {
   final int movieId;
   final String title;
   final String imagePath;
@@ -106,7 +106,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                       'Overview',
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold ,
                       ),
                     ),
                     const SizedBox(height: 8),

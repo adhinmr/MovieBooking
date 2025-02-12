@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:movie_booking_app/services/seatbooking.dart';
+import 'package:movie_booking_app/provider/moviebooking_provider.dart';
+import 'package:movie_booking_app/services/seat_booking.dart';
+import 'package:provider/provider.dart';
 
 class MovieBookingPage extends StatefulWidget {
   final String title;
@@ -13,10 +15,9 @@ class MovieBookingPage extends StatefulWidget {
   State<MovieBookingPage> createState() => _MovieBookingPageState();
 }
 
-class _MovieBookingPageState extends State<MovieBookingPage> {
+class _MovieBookingPageState extends State<MovieBookingPage>  {
   DateTime? _selectedDate;
-  String? _selectedTheater;
-  String? _selectedShowtime;
+  
 
   final List<String> _theaters = [
     'Palaxi Cinimas HILITE MALL', 
@@ -32,6 +33,9 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider =Provider.of<MovieBookingProvider>(context);
+    String? selectedTheater = Provider.of<MovieBookingProvider>(context).selectedTheater;
+    String? selectedShowtime= Provider.of<MovieBookingProvider>(context).selectedShowtime;
     List<DateTime> next30Days = _getNext30Days();
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +48,7 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
       ),
       body: Stack(
         children: [
-          // Background Image with Blur Effect
+          // Background
           Positioned.fill(
             child: Image.network(
               widget.imagePath,
@@ -107,9 +111,8 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                             padding: const EdgeInsets.only(right: 8.0),
                             child: GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  _selectedDate = date;
-                                });
+
+                              provider.selectDate(date);
                               },
                               child: Container(
                                 width: 70,
@@ -164,7 +167,7 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                             color: Colors.white70,
                           ),
                         ),
-                        value: _selectedTheater,
+                        value: selectedTheater,
                         dropdownColor: Colors.black87,
                         style: const TextStyle(
                           color: Colors.white,
@@ -177,9 +180,8 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                           );
                         }).toList(),
                         onChanged: (newValue) {
-                          setState(() {
-                            _selectedTheater = newValue;
-                          });
+
+                       provider.selectTheater(newValue!);
                         },
                       ),
                     ),
@@ -202,7 +204,7 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                             color: Colors.white70,
                           ),
                         ),
-                        value: _selectedShowtime,
+                        value: selectedShowtime,
                         dropdownColor: Colors.black87,
                         style: const TextStyle(
                           color: Colors.white,
@@ -215,9 +217,7 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                           );
                         }).toList(),
                         onChanged: (newValue) {
-                          setState(() {
-                            _selectedShowtime = newValue;
-                          });
+                       provider.selectShowtime(newValue!);
                         },
                       ),
                     ),
@@ -228,9 +228,10 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_selectedDate != null && 
-                              _selectedTheater != null && 
-                              _selectedShowtime != null) {
+                          final provider = Provider.of<MovieBookingProvider>(context,listen:false);
+                          if (provider.selectedDate!= null&&
+                          provider.selectedTheater != null&&
+                          provider.selectedShowtime!=null ) {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -244,6 +245,8 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                                     child: const Text(
                                       "Booking Details",
                                       style: TextStyle(color: Colors.white),
+                                      
+              
                                     ),
                                   ),
                                   content: Column(
@@ -251,9 +254,9 @@ class _MovieBookingPageState extends State<MovieBookingPage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text("Movie: ${widget.title}"),
-                                      Text("Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}"),
-                                      Text("Theater: $_selectedTheater"),
-                                      Text("Showtime: $_selectedShowtime"),
+                                      Text("Date: ${DateFormat('yyyy-MM-dd').format(provider.selectedDate!)}"),
+                                      Text("Theater: ${provider.selectedTheater}"),
+                                      Text("Showtime: ${provider.selectedShowtime}"),
                                     ],
                                   ),
                                   actions: [

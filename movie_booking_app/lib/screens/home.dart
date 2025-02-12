@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movie_booking_app/API/apicall.dart';
+import 'package:movie_booking_app/provider/moviebooking_provider.dart';
 import 'package:movie_booking_app/services/movie_service.dart';
 import 'package:movie_booking_app/screens/movie_details_page.dart';
-import 'package:movie_booking_app/services/moviedetailes.dart';
+import 'package:movie_booking_app/services/movie_detailes.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,7 +37,8 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true;
     });
     try {
-      List<Map<String, dynamic>> movies = await _movieService.fetchPopularMovies();
+      List<Map<String, dynamic>> movies =
+          await _movieService.fetchPopularMovies();
       setState(() {
         _movies = movies;
         _filteredMovies = movies;
@@ -54,18 +57,24 @@ class _HomePageState extends State<HomePage> {
   void _filterMovies(String query) {
     setState(() {
       _filteredMovies = _movies.where((movie) {
-        return movie['title'].toString().toLowerCase().contains(query.toLowerCase());
+        return movie['title']
+            .toString()
+            .toLowerCase()
+            .contains(query.toLowerCase());
       }).toList();
     });
   }
 
-  Widget _buildMovieCard(int movieId, String? imagePath, String title, double voteAverage) {
+  Widget _buildMovieCard(
+      int movieId, String? imagePath, String title, double voteAverage) {
     final String fullImagePath = imagePath != null && imagePath.isNotEmpty
         ? 'https://image.tmdb.org/t/p/w500$imagePath'
         : 'https://via.placeholder.com/100x150';
 
     return GestureDetector(
       onTap: () {
+        Provider.of <MovieBookingProvider>(context, listen: false)
+                .selectMovie(title, fullImagePath);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -88,7 +97,8 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               flex: 4,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Stack(
                   children: [
                     Image.network(
@@ -104,7 +114,8 @@ class _HomePageState extends State<HomePage> {
                       top: 8,
                       right: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.black54,
                           borderRadius: BorderRadius.circular(12),
@@ -112,7 +123,8 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            const Icon(Icons.star,
+                                color: Colors.amber, size: 16),
                             const SizedBox(width: 4),
                             Text(
                               voteAverage.toStringAsFixed(1),
@@ -168,13 +180,13 @@ class _HomePageState extends State<HomePage> {
                       fontSize: 18,
                     ),
                   ),
-                  
                   background: Container(color: Colors.white),
                 ),
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   child: TextField(
                     controller: _searchController,
                     onChanged: _filterMovies,
@@ -186,7 +198,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                     ),
                   ),
                 ),
@@ -198,7 +211,8 @@ class _HomePageState extends State<HomePage> {
                   : SliverPadding(
                       padding: const EdgeInsets.all(16.0),
                       sliver: SliverGrid(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,

@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isObscured = true;
-  final _formkey = GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState> ();
   String _email = "";
   String _password = "";
 
@@ -122,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               prefixIcon: const Icon(Icons.lock_outline, color: Colors.blue),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
+                                
                                 borderSide: BorderSide.none,
                               ),
                               floatingLabelStyle: const TextStyle(color: Colors.blue),
